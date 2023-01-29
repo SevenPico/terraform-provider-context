@@ -70,7 +70,7 @@ func TestDescriptors(t *testing.T) {
 		}
 
 		descriptors = {
-			id = {
+			name = {
 				order     = ["stage", "env", "project", "attributes"]
 				delimiter = "-"
 				upper     = false
@@ -130,7 +130,7 @@ func TestDescriptors(t *testing.T) {
 	data "context" "too_long" {
 		attributes = ["buzzzzzzzzzzzzzzz"]
 		descriptors = {
-			id = {
+			name = {
 				order = ["attributes"]
 				limit = 10
 			}
@@ -146,33 +146,34 @@ func TestDescriptors(t *testing.T) {
 			{
 				Config: tfConfig,
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.context.base", "name", "dev-bar-foo"),
 					resource.TestCheckResourceAttr("data.context.base", "id", "dev-bar-foo"),
 					resource.TestCheckResourceAttr("data.context.base", "namespace", "dev-bar-foo"),
 					resource.TestCheckResourceAttr("data.context.base", "descriptors.fqdn.value", "dev.bar.foo.example.com"),
 					resource.TestCheckResourceAttr("data.context.base", "descriptors.fqdn2.value", "example.com"),
 					resource.TestCheckResourceAttr("data.context.base", "descriptors.fqdn3.value", "example.com"),
 
-					resource.TestCheckResourceAttr("data.context.fizz", "id", "dev-bar-foo-fizz"),
+					resource.TestCheckResourceAttr("data.context.fizz", "name", "dev-bar-foo-fizz"),
 					resource.TestCheckResourceAttr("data.context.fizz", "namespace", "dev-bar-foo"),
 					resource.TestCheckResourceAttr("data.context.fizz", "descriptors.fqdn.value", "fizz.dev.bar.foo.example.com"),
 					resource.TestCheckResourceAttr("data.context.fizz", "descriptors.fqdn2.value", "fizz.example.com"),
 					resource.TestCheckResourceAttr("data.context.fizz", "descriptors.fqdn3.value", "fizz.example.com"),
 
-					resource.TestCheckResourceAttr("data.context.buzz", "id", "dev-bar-foo-fizz-buzz"),
+					resource.TestCheckResourceAttr("data.context.buzz", "name", "dev-bar-foo-fizz-buzz"),
 					resource.TestCheckResourceAttr("data.context.buzz", "namespace", "dev-bar-foo"),
 					resource.TestCheckResourceAttr("data.context.buzz", "descriptors.fqdn.value", "fizz.buzz.dev.bar.foo.example.com"),
 					resource.TestCheckResourceAttr("data.context.buzz", "descriptors.fqdn2.value", "fizz-buzz.example.com"),
 					resource.TestCheckResourceAttr("data.context.buzz", "descriptors.fqdn3.value", "buzz.fizz.example.com"),
 
-					resource.TestCheckResourceAttr("data.context.too_long", "id", "buzzzzzzzz"),
+					resource.TestCheckResourceAttr("data.context.too_long", "name", "buzzzzzzzz"),
 
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.project", "foo"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.stage", "dev"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.env", "bar"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.domain", "example.com"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.id", "dev-bar-foo-fizz-buzz"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.namespace", "dev-bar-foo"),
-					resource.TestCheckResourceAttr("data.context.buzz", "tags.fqdn", "fizz.buzz.dev.bar.foo.example.com"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Project", "foo"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Stage", "dev"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Env", "bar"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Domain", "example.com"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Name", "dev-bar-foo-fizz-buzz"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Namespace", "dev-bar-foo"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.Fqdn", "fizz.buzz.dev.bar.foo.example.com"),
 				),
 			},
 		},

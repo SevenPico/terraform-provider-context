@@ -81,7 +81,6 @@ func (*ContextDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 		},
 	}
 
-	// id, prefix, dns_name, title
 	partialAttributes := map[string]schema.Attribute{
 		"enabled": schema.BoolAttribute{
 			MarkdownDescription: "Set `true` if resources that use this context should be created.",
@@ -107,6 +106,11 @@ func (*ContextDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 
 		// Outputs
 		"id": schema.StringAttribute{
+			MarkdownDescription: "TODO",
+			Computed:            true,
+			Optional:            true,
+		},
+		"name": schema.StringAttribute{
 			MarkdownDescription: "TODO",
 			Computed:            true,
 			Optional:            true,
@@ -207,17 +211,6 @@ func (*ContextDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		child.Descriptors = parent.Descriptors
 
 		// Defaults for first-class descriptors
-		if _, ok := child.Descriptors["id"]; !ok {
-			child.Descriptors["id"] = Descriptor{
-				Delimiter: types.StringValue("-"),
-				Upper:     types.BoolValue(false),
-				Lower:     types.BoolValue(false),
-				Title:     types.BoolValue(false),
-				Reverse:   types.BoolValue(false),
-				Limit:     types.Int64Value(64),
-				Order:     []types.String{types.StringValue("attributes")},
-			}
-		}
 		if _, ok := child.Descriptors["namespace"]; !ok {
 			child.Descriptors["namespace"] = Descriptor{
 				Delimiter: types.StringValue("-"),
@@ -227,6 +220,21 @@ func (*ContextDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 				Reverse:   types.BoolValue(false),
 				Limit:     types.Int64Value(math.MaxInt64),
 				Order:     []types.String{},
+			}
+		}
+
+		if _, ok := child.Descriptors["name"]; !ok {
+			child.Descriptors["name"] = Descriptor{
+				Delimiter: types.StringValue("-"),
+				Upper:     types.BoolValue(false),
+				Lower:     types.BoolValue(false),
+				Title:     types.BoolValue(false),
+				Reverse:   types.BoolValue(false),
+				Limit:     types.Int64Value(64),
+				Order: []types.String{
+					types.StringValue("$namespace"),
+					types.StringValue("attributes"),
+				},
 			}
 		}
 
@@ -265,13 +273,21 @@ func (*ContextDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("descriptors"), child.Descriptors)...)
 
 	// First-class descriptors
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), child.Descriptors["id"].Value)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("namespace"), child.Descriptors["namespace"].Value)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), child.Descriptors["name"].Value)...)
+
+	// id always equal to name
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), child.Descriptors["name"].Value)...)
 
 	// Tags
-	tags := child.AttributesMap
+	tags := map[string]types.String{}
+
+	for k, v := range child.AttributesMap {
+		tags[strings.Title(k)] = v
+	}
+
 	for k, d := range child.Descriptors {
-		tags[k] = d.Value
+		tags[strings.Title(k)] = d.Value
 	}
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("tags"), tags)...)
 }

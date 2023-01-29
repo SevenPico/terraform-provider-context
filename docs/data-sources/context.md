@@ -29,6 +29,7 @@ data "context" "this" {
 - `descriptors` (Attributes Map) TODO (see [below for nested schema](#nestedatt--descriptors))
 - `enabled` (Boolean) Set `true` if resources that use this context should be created.
 - `id` (String) TODO
+- `name` (String) TODO
 - `namespace` (String) TODO
 - `tags` (Map of String) TODO
 
@@ -42,6 +43,7 @@ Optional:
 - `descriptors` (Attributes Map) TODO (see [below for nested schema](#nestedatt--context--descriptors))
 - `enabled` (Boolean) Set `true` if resources that use this context should be created.
 - `id` (String) TODO
+- `name` (String) TODO
 - `namespace` (String) TODO
 - `tags` (Map of String) TODO
 
