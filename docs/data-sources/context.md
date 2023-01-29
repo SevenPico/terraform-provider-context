@@ -30,6 +30,7 @@ data "context" "this" {
 - `enabled` (Boolean) Set `true` if resources that use this context should be created.
 - `id` (String) TODO
 - `namespace` (String) TODO
+- `tags` (Map of String) TODO
 
 <a id="nestedatt--context"></a>
 ### Nested Schema for `context`
@@ -42,6 +43,7 @@ Optional:
 - `enabled` (Boolean) Set `true` if resources that use this context should be created.
 - `id` (String) TODO
 - `namespace` (String) TODO
+- `tags` (Map of String) TODO
 
 <a id="nestedatt--context--descriptors"></a>
 ### Nested Schema for `context.descriptors`

@@ -165,6 +165,14 @@ func TestDescriptors(t *testing.T) {
 					resource.TestCheckResourceAttr("data.context.buzz", "descriptors.fqdn3.value", "buzz.fizz.example.com"),
 
 					resource.TestCheckResourceAttr("data.context.too_long", "id", "buzzzzzzzz"),
+
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.project", "foo"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.stage", "dev"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.env", "bar"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.domain", "example.com"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.id", "dev-bar-foo-fizz-buzz"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.namespace", "dev-bar-foo"),
+					resource.TestCheckResourceAttr("data.context.buzz", "tags.fqdn", "fizz.buzz.dev.bar.foo.example.com"),
 				),
 			},
 		},

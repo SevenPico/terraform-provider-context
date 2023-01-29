@@ -116,6 +116,12 @@ func (*ContextDataSource) Schema(ctx context.Context, req datasource.SchemaReque
 			Computed:            true,
 			Optional:            true,
 		},
+		"tags": schema.MapAttribute{
+			ElementType:         types.StringType,
+			MarkdownDescription: "TODO",
+			Computed:            true,
+			Optional:            true,
+		},
 	}
 
 	attributes := map[string]schema.Attribute{}
@@ -261,6 +267,13 @@ func (*ContextDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	// First-class descriptors
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), child.Descriptors["id"].Value)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("namespace"), child.Descriptors["namespace"].Value)...)
+
+	// Tags
+	tags := child.AttributesMap
+	for k, d := range child.Descriptors {
+		tags[k] = d.Value
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("tags"), tags)...)
 }
 
 func (d *Descriptor) Compute(attributesMap map[string]string, attributes []string) diag.Diagnostics {
